@@ -1,6 +1,6 @@
 # DataPilot Enterprise
 
-A **work-in-progress full-stack portfolio project** focused on professional software development practices. The aim is to build the application incrementally and document real engineering decisions along the way.
+An evolving full-stack data quality application, built incrementally with an emphasis on clear architecture, reviewable changes, and documented engineering decisions.
 
 > **Current status:** Early frontend scaffold. This is not a finished or deployed application.
 
@@ -54,7 +54,7 @@ npm run build
 
 ## Development approach
 
-This repository is a learning and portfolio project, so changes will be delivered in small, reviewable steps. Source code and commit history should make it clear what is actually implemented.
+Development follows small, reviewable steps. Source code and commit history should make it clear what is actually implemented.
 
 ## Developer
 
