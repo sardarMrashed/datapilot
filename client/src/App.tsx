@@ -1,34 +1,61 @@
 
 import { useState } from 'react';
 import './App.css'
-import Papa from 'papaparse';
+import Papa from 'papaparse'; 
 
-export default  function App() {
-const [fileName, setFileName] = useState('');
-const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
-const [csvRows, setCsvRows] = useState<string[][]>([]);
-  return (  
+export default function App() {
+  const [fileName, setFileName] = useState('');
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+  const [csvRows, setCsvRows] = useState<string[][]>([]);
+const seenRows = new Set<string>();
+
+const duplicateRows =csvRows.filter((row)=> {
+
+  const singature = JSON.stringify(row)
+  
+  if(seenRows.has(singature)){
+    return true
+  }
+  seenRows.add(singature)
+  return false
+  
+});
+
+  const missingRows = csvRows.filter((row) =>
+    row.some((cell) => cell.trim() === '')
+  );
+
+
+return(
     <div >
+     
       <h1>DataPilot Enterprise</h1>
       <p>Manage, validate, and clean your business data.</p> 
       
 <div className="parent-container">
       <div className="datasets">
         <h2>Total Datasets</h2>
-        <p>0</p>
-        <p>No datasets uploaded yet</p>
+        <p>{fileName ? 1 : 0 }</p>
+        <p>{fileName ? "Dataset uploaded successfully" : "No datasets uploaded yet"}</p>
       </div>
 
-     <div className="records">
-        <h2>Records checked</h2>
-        <p>No records processed yet</p>
-      </div>
+    <div className="records">
+  <h2>Records Checked</h2>
+  <p>{csvRows.length}</p>
+  <p>
+    {csvRows.length > 0
+      ? "Records processed successfully"
+      : "No records processed yet"}
+  </p>
+</div>
      
 
         <div className="records">
-        <h2>issues Found</h2>
-        <p>0</p>
-        <p>No records processed yet</p>
+        <h2>Duplicate records:</h2>
+        <p>{duplicateRows.length}</p>
+      <p>
+{csvRows.length > 0 ? "Records processed successfully" : "No records processed yet"}
+</p>
       </div>
   </div>
 
@@ -64,16 +91,29 @@ setCsvRows(result.data.slice(1));
       {csvHeaders.map((header) => (
         <th key={header}>{header}</th>
       ))}
-
+<th>status</th>
     </tr>
+    
   </thead>
 
   <tbody>
-    {csvRows.map((row, index) => (
-  <tr key={index}>
+{csvRows.map((row, index) => (
+ <tr
+  key={index}
+  className={duplicateRows.includes(row) ? 'duplicate-row' : ''}
+>
     {row.map((cell, cellIndex) => (
-      <td key={cellIndex}>{cell}</td>
-    ))}
+      <td
+        key={cellIndex}
+        className={cell.trim() === '' ? 'missing-cell' : ''}
+      >
+        {cell.trim() === '' ? 'Missing' : cell}
+      </td>
+  
+    ))}  
+      <td>
+        {duplicateRows.includes(row) ? 'Duplicate' : 'Original'}
+      </td>
   </tr>
 ))}
   </tbody>
